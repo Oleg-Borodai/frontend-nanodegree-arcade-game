@@ -3,7 +3,7 @@ var Enemy = function() {
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
   this.x = -101;
-  this.y = 60 + Math.floor(Math.random()*3) * 80;
+  this.y = 60 + Math.floor(Math.random() * 3) * 80;
   this.speed = Math.random() * 100 + 20;
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
@@ -48,7 +48,7 @@ var Player = function() {
   this.sprite = 0;
 }
 
-Player.prototype.render = function(dt){
+Player.prototype.render = function(){
   ctx.drawImage(Resources.get(this.sprites[this.sprite]), this.x, this.y);
 };
 
@@ -86,12 +86,35 @@ Player.prototype.handleInput = function(keycode) {
     this.y = newy;
 };
 
+var Collectable = function(){
+  this.x = Math.floor(Math.random() * 5) * 101;
+  this.y = 60 + Math.floor(Math.random() * 3) * 80;
+  this.sprites = [
+    "images/gem-blue.png",
+    "images/gem-green.png",
+    "images/gem-orange.png"]
+  this.sprite = Math.floor(Math.random() * this.sprites.length)
+};
+
+Collectable.prototype.render = function() {
+  ctx.drawImage(Resources.get(this.sprites[this.sprite]), this.x, this.y);
+};
+
+Collectable.prototype.update = function(){
+  //collecting
+  // Identify collisions
+  if((this.x >= player.x - 90) && (this.x <= (player.x + 90)) &&
+  (this.y == player.y)){
+    this.constructor();
+  }
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [new Enemy(), new Enemy(), new Enemy(), new Enemy()];
 var player = new Player();
-
+var allCollectables = [new Collectable(), new Collectable()];
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener("keyup", function(e) {
